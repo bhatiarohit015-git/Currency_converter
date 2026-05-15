@@ -40,17 +40,13 @@ pandas==2.3.1
 peewee==3.18.2
 pillow==11.3.0
 platformdirs==4.3.8
-playsound==1.2.2
 protobuf==6.32.0
-PyAudio==0.2.14
 pycparser==2.22
 Pygments==2.20.0
 pyparsing==3.2.3
-pypiwin32==223
 python-dateutil==2.9.0.post0
 pyttsx3==2.99
 pytz==2025.2
-pywin32==311
 PyYAML==6.0.3
 regex==2026.4.4
 requests==2.32.4
