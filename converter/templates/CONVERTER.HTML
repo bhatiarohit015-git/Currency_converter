@@ -1,0 +1,436 @@
+{% comment %} </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Converter</title>
+    <style>
+        /* ===== Global Styles ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ===== Card Container ===== */
+        .container {
+            background: white;
+            padding: 28px;
+            border-radius: 15px;
+            width: 380px;
+            max-width: 90%;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* ===== Title ===== */
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.9em;
+            margin-bottom: 20px;
+        }
+
+        /* ===== Form Elements ===== */
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+        select:focus, input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52, 152, 219, 0.4);
+        }
+
+        /* ===== Buttons ===== */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease-in-out;
+            color: white;
+        }
+
+        /* Convert Button (Yellow & Green) */
+        button[type="submit"] {
+            background: linear-gradient(90deg, #f1c40f, #27ae60);
+            box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
+        }
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #ffdd00, #2ecc71);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* History Button (Red & Blue) */
+        .btn-history {
+            background: linear-gradient(90deg, #e74c3c, #3498db);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        .btn-history:hover {
+            background: linear-gradient(90deg, #ff6b6b, #4aa3ff);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Result Box ===== */
+        .result {
+            margin-top: 15px;
+            background: #f0f8ff;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1em;
+            border: 1px solid #d0e9ff;
+        }
+
+        /* ===== Animation ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>💱 Currency Converter</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <input type="number" name="amount" step="0.01" placeholder="Enter Amount" required>
+
+            <select name="from_currency" required>
+                <option value="">-- Select From Currency --</option>
+                {% for code, name in currency.items %}
+                    <option value="{{ code }}">{{ code }} - {{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="to_currency" required>
+                <option value="">-- Select To Currency --</option>
+                {% for code, name in currency.items %}
+                    <option value="{{ code }}">{{ code }} - {{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Convert</button>
+        </form>
+
+        <form action="all_history", method="GET">
+            <button type="submit" class="btn-history">📜 View History</button>
+        </form>
+
+        {% if data %}
+        <div class="result">
+            {{ data.amount }} {{ data.from_currency }} = {{ data.converted_amount }} {{ data.to_currency }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html> {% endcomment %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Currency Converter</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55, #00c6ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ===== Main Card ===== */
+
+        .container {
+            width: 430px;
+            max-width: 100%;
+            padding: 35px;
+            border-radius: 25px;
+
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+            animation: fadeIn 0.7s ease;
+        }
+
+        /* ===== Heading ===== */
+
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2rem;
+            margin-bottom: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* ===== Input & Select ===== */
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+
+            border: none;
+            outline: none;
+
+            border-radius: 14px;
+
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            transition: 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #e0e0e0;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            color: black;
+        }
+
+        input:focus,
+        select:focus {
+            border: 1px solid #00e5ff;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* ===== Buttons ===== */
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+
+            border: none;
+            border-radius: 14px;
+
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+
+            color: white;
+        }
+
+        /* Convert Button */
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #00c853, #00e5ff);
+            box-shadow: 0 5px 18px rgba(0, 229, 255, 0.35);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(0, 229, 255, 0.55);
+            background: linear-gradient(135deg, #00e676, #00b0ff);
+        }
+
+        /* History Button */
+
+        .btn-history {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            box-shadow: 0 5px 18px rgba(221, 36, 118, 0.35);
+        }
+
+        .btn-history:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(221, 36, 118, 0.55);
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+        }
+
+        /* ===== Result Box ===== */
+
+        .result {
+            margin-top: 22px;
+
+            padding: 16px;
+
+            border-radius: 16px;
+
+            background: rgba(255, 255, 255, 0.12);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            color: #ffffff;
+
+            text-align: center;
+
+            font-size: 1rem;
+            font-weight: 500;
+
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* ===== Animation ===== */
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Responsive ===== */
+
+        @media (max-width: 500px) {
+
+            .container {
+                padding: 25px;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+
+            input,
+            select,
+            button {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>💱 Currency Converter</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="number"
+                   name="amount"
+                   step="0.01"
+                   placeholder="Enter Amount"
+                   required>
+
+            <select name="from_currency" required>
+
+                <option value="">-- Select From Currency --</option>
+
+                {% for code, name in currency.items %}
+
+                <option value="{{ code }}">
+                    {{ code }} - {{ name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <select name="to_currency" required>
+
+                <option value="">-- Select To Currency --</option>
+
+                {% for code, name in currency.items %}
+
+                <option value="{{ code }}">
+                    {{ code }} - {{ name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                🚀 Convert Currency
+            </button>
+
+        </form>
+
+        <form action="all_history" method="GET">
+
+            <button type="submit" class="btn-history">
+                📜 View History
+            </button>
+
+        </form>
+
+        {% if data %}
+
+        <div class="result">
+
+            {{ data.amount }} {{ data.from_currency }}
+            =
+            {{ data.converted_amount }} {{ data.to_currency }}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
