@@ -36,7 +36,6 @@ multitasking==0.0.12
 networkx==3.6.1
 numpy==2.3.2
 packaging==25.0
-panda==0.3.1
 pandas==2.3.1
 peewee==3.18.2
 pillow==11.3.0
