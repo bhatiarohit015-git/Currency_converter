@@ -9,7 +9,9 @@ API = 'e00dc3fd8136c1430c5cae3e'
 def converter(request):
     try:
         data = None
-        file_path ='converter\\file.json'
+        # file_path ='converter\\file.json'
+        file_path ='converter/file.json'
+        
         with open(file_path,'r') as file:
             data = json.load(file)
         currency=data['currency']
